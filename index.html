@@ -4,349 +4,80 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Current Affairs Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg: #0c0f1a;
-      --surface: #141824;
-      --surface2: #1c2235;
-      --border: rgba(255,255,255,0.07);
-      --accent: #4f8ef7;
-      --accent2: #7c3aed;
-      --text: #f0f4ff;
-      --muted: #8892a4;
-      --card-hover: #202844;
+      --bg:#0c0f1a; --surface:#141824; --surface2:#1c2235;
+      --border:rgba(255,255,255,0.07); --accent:#4f8ef7; --accent2:#7c3aed;
+      --text:#f0f4ff; --muted:#8892a4; --card-hover:#202844;
     }
     [data-theme="light"] {
-      --bg: #f4f6fb;
-      --surface: #ffffff;
-      --surface2: #eef1f8;
-      --border: rgba(0,0,0,0.08);
-      --accent: #2563eb;
-      --accent2: #7c3aed;
-      --text: #1a1f36;
-      --muted: #64748b;
-      --card-hover: #e8edf8;
+      --bg:#f4f6fb; --surface:#ffffff; --surface2:#eef1f8;
+      --border:rgba(0,0,0,0.08); --accent:#2563eb; --accent2:#7c3aed;
+      --text:#1a1f36; --muted:#64748b; --card-hover:#e8edf8;
     }
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      background: var(--bg);
-      font-family: 'DM Sans', sans-serif;
-      color: var(--text);
-      min-height: 100vh;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    /* HEADER */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 200;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
-      backdrop-filter: blur(12px);
-    }
-    .header-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .brand-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: #ef4444;
-      animation: livepulse 1.4s ease-in-out infinite;
-    }
-    @keyframes livepulse {
-      0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.5)}
-      50%{box-shadow:0 0 0 6px rgba(239,68,68,0)}
-    }
-    .brand h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
-      letter-spacing: -0.3px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .header-actions { display: flex; align-items: center; gap: 10px; }
-    .icon-btn {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      transition: background 0.2s, transform 0.1s;
-    }
-    .icon-btn:hover { background: var(--card-hover); transform: scale(1.05); }
-    .icon-btn:active { transform: scale(0.96); }
-    #articleCount {
-      font-size: 13px;
-      color: var(--muted);
-      background: var(--surface2);
-      padding: 4px 12px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-    }
-    .search-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    #searchInput {
-      flex: 1;
-      padding: 10px 14px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    #searchInput::placeholder { color: var(--muted); }
-    #searchInput:focus { border-color: var(--accent); }
-    .categories {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .cat-btn {
-      padding: 7px 16px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      color: var(--muted);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .cat-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .cat-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    /* TICKER */
-    .ticker-wrap {
-      background: linear-gradient(90deg, var(--accent2), var(--accent));
-      padding: 8px 0;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-    .ticker-content {
-      display: inline-block;
-      animation: ticker 30s linear infinite;
-      font-size: 13px;
-      font-weight: 500;
-      color: #fff;
-      padding-left: 100%;
-    }
-    @keyframes ticker {
-      0%{transform:translateX(0)}
-      100%{transform:translateX(-100%)}
-    }
-
-    /* GRID */
-    #newsContainer {
-      padding: 24px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 18px;
-    }
-
-    /* SKELETON */
-    .skeleton-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-    }
-    .skel-img { height: 180px; background: var(--surface2); position: relative; overflow: hidden; }
-    .skel-body { padding: 16px; }
-    .skel-line {
-      height: 14px;
-      background: var(--surface2);
-      border-radius: 6px;
-      margin-bottom: 10px;
-      position: relative;
-      overflow: hidden;
-    }
-    .skel-line.short { width: 60%; }
-    .skel-line::after, .skel-img::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-      animation: shimmer 1.5s infinite;
-    }
-    @keyframes shimmer {
-      0%{transform:translateX(-100%)}
-      100%{transform:translateX(100%)}
-    }
-
-    /* CARD */
-    .news-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
-      display: flex;
-      flex-direction: column;
-      animation: fadeUp 0.4s ease both;
-    }
-    @keyframes fadeUp {
-      from{opacity:0;transform:translateY(16px)}
-      to{opacity:1;transform:translateY(0)}
-    }
-    .news-card:hover {
-      transform: translateY(-4px);
-      background: var(--card-hover);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
-    }
-    .card-img-wrap { position: relative; height: 185px; overflow: hidden; }
-    .card-img-wrap img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s;
-    }
-    .news-card:hover .card-img-wrap img { transform: scale(1.04); }
-    .source-badge {
-      position: absolute;
-      top: 10px; left: 10px;
-      background: rgba(0,0,0,0.7);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 20px;
-      letter-spacing: 0.3px;
-      backdrop-filter: blur(4px);
-    }
-    .news-content {
-      padding: 14px 16px 16px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-    .news-content h2 {
-      font-size: 15px;
-      font-weight: 600;
-      line-height: 1.45;
-      margin-bottom: 8px;
-      color: var(--text);
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .news-content p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.55;
-      margin-bottom: 12px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      flex: 1;
-    }
-    .news-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    .news-author {
-      font-size: 12px;
-      color: var(--muted);
-      display: flex; align-items: center; gap: 5px;
-    }
-    .news-date {
-      font-size: 12px;
-      color: var(--muted);
-      background: var(--surface2);
-      padding: 2px 8px;
-      border-radius: 6px;
-    }
-    .read-btn {
-      display: block;
-      text-align: center;
-      text-decoration: none;
-      background: var(--accent);
-      color: #fff;
-      padding: 9px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 500;
-      transition: background 0.2s, transform 0.1s;
-    }
-    .read-btn:hover { background: var(--accent2); transform: translateY(-1px); }
-    .read-btn:active { transform: scale(0.98); }
-
-    /* EMPTY */
-    .empty-state {
-      grid-column: 1/-1;
-      text-align: center;
-      padding: 80px 20px;
-    }
-    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
-    .empty-state h3 { font-size: 20px; margin-bottom: 8px; }
-    .empty-state p { color: var(--muted); font-size: 14px; }
-
-    /* FOOTER */
-    footer {
-      text-align: center;
-      padding: 24px;
-      color: var(--muted);
-      font-size: 13px;
-      border-top: 1px solid var(--border);
-    }
-
-    /* TOAST */
-    #toast {
-      position: fixed;
-      bottom: 24px; right: 24px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-size: 14px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-      transform: translateY(80px);
-      opacity: 0;
-      transition: all 0.3s;
-      z-index: 999;
-    }
-    #toast.show { transform: translateY(0); opacity: 1; }
-
-    @media(max-width:600px){
-      #newsContainer{ padding:12px; gap:12px; }
-      header{ padding:12px 14px; }
-      .brand h1{ font-size:18px; }
-    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;transition:background .3s,color .3s;}
+    header{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1px solid var(--border);padding:16px 24px;backdrop-filter:blur(12px);}
+    .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+    .brand{display:flex;align-items:center;gap:10px;}
+    .brand-dot{width:10px;height:10px;border-radius:50%;background:#ef4444;animation:livepulse 1.4s ease-in-out infinite;}
+    @keyframes livepulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5)}50%{box-shadow:0 0 0 6px rgba(239,68,68,0)}}
+    .brand h1{font-family:'Playfair Display',serif;font-size:22px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .header-actions{display:flex;align-items:center;gap:10px;}
+    .icon-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:background .2s,transform .1s;}
+    .icon-btn:hover{background:var(--card-hover);transform:scale(1.05);}
+    #articleCount{font-size:13px;color:var(--muted);background:var(--surface2);padding:4px 12px;border-radius:20px;border:1px solid var(--border);}
+    .search-row{display:flex;gap:10px;margin-bottom:14px;}
+    #searchInput{flex:1;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s;}
+    #searchInput::placeholder{color:var(--muted);}
+    #searchInput:focus{border-color:var(--accent);}
+    .categories{display:flex;flex-wrap:wrap;gap:8px;}
+    .cat-btn{padding:7px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;}
+    .cat-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .cat-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+    .ticker-wrap{background:linear-gradient(90deg,var(--accent2),var(--accent));padding:8px 0;overflow:hidden;white-space:nowrap;}
+    .ticker-content{display:inline-block;animation:ticker 40s linear infinite;font-size:13px;font-weight:500;color:#fff;padding-left:100%;}
+    @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+    #newsContainer{padding:24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
+    .skeleton-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+    .skel-img{height:180px;background:var(--surface2);position:relative;overflow:hidden;}
+    .skel-body{padding:16px;}
+    .skel-line{height:14px;background:var(--surface2);border-radius:6px;margin-bottom:10px;position:relative;overflow:hidden;}
+    .skel-line.short{width:60%;}
+    .skel-line::after,.skel-img::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);animation:shimmer 1.5s infinite;}
+    @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+    .news-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .25s,box-shadow .25s,background .25s;display:flex;flex-direction:column;animation:fadeUp .4s ease both;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .news-card:hover{transform:translateY(-4px);background:var(--card-hover);box-shadow:0 12px 40px rgba(0,0,0,.25);}
+    .card-img-wrap{position:relative;height:185px;overflow:hidden;}
+    .card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+    .news-card:hover .card-img-wrap img{transform:scale(1.04);}
+    .source-badge{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.7);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;backdrop-filter:blur(4px);}
+    .news-content{padding:14px 16px 16px;display:flex;flex-direction:column;flex:1;}
+    .news-content h2{font-size:15px;font-weight:600;line-height:1.45;margin-bottom:8px;color:var(--text);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+    .news-content p{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex:1;}
+    .news-footer{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+    .news-author{font-size:12px;color:var(--muted);}
+    .news-date{font-size:12px;color:var(--muted);background:var(--surface2);padding:2px 8px;border-radius:6px;}
+    .read-btn{display:block;text-align:center;text-decoration:none;background:var(--accent);color:#fff;padding:9px;border-radius:10px;font-size:13px;font-weight:500;transition:background .2s,transform .1s;}
+    .read-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+    .empty-state{grid-column:1/-1;text-align:center;padding:60px 20px;}
+    .empty-state .icon{font-size:48px;margin-bottom:16px;}
+    .empty-state h3{font-size:20px;margin-bottom:8px;}
+    .empty-state p{color:var(--muted);font-size:14px;line-height:1.7;}
+    .empty-state code{background:var(--surface2);padding:2px 8px;border-radius:6px;font-size:13px;}
+    .apikey-form{margin-top:20px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+    .apikey-form input{padding:9px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;outline:none;width:260px;}
+    .apikey-form input:focus{border-color:var(--accent);}
+    .apikey-form button{padding:9px 18px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:13px;cursor:pointer;}
+    footer{text-align:center;padding:24px;color:var(--muted);font-size:13px;border-top:1px solid var(--border);}
+    #toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 18px;border-radius:12px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.3);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;}
+    #toast.show{transform:translateY(0);opacity:1;}
+    @media(max-width:600px){#newsContainer{padding:12px;gap:12px;}header{padding:12px 14px;}.brand h1{font-size:18px;}}
   </style>
 </head>
 <body>
-
 <header>
   <div class="header-top">
     <div class="brand">
@@ -363,190 +94,197 @@
     <input type="text" id="searchInput" placeholder="Search headlines…" autocomplete="off"/>
   </div>
   <div class="categories">
-    <button class="cat-btn active" data-source="hindu" onclick="setSource('hindu',this)">The Hindu</button>
-    <button class="cat-btn" data-source="toi" onclick="setSource('toi',this)">Times of India</button>
-    <button class="cat-btn" data-source="indianexpress" onclick="setSource('indianexpress',this)">Indian Express</button>
-    <button class="cat-btn" data-source="bbc" onclick="setSource('bbc',this)">BBC News</button>
-    <button class="cat-btn" data-source="ndtv" onclick="setSource('ndtv',this)">NDTV</button>
+    <button class="cat-btn active" onclick="setTopic('india',this)">🇮🇳 India</button>
+    <button class="cat-btn" onclick="setTopic('world',this)">🌍 World</button>
+    <button class="cat-btn" onclick="setTopic('technology',this)">💻 Technology</button>
+    <button class="cat-btn" onclick="setTopic('business',this)">📈 Business</button>
+    <button class="cat-btn" onclick="setTopic('sports',this)">🏏 Sports</button>
+    <button class="cat-btn" onclick="setTopic('science',this)">🔬 Science</button>
+    <button class="cat-btn" onclick="setTopic('health',this)">❤️ Health</button>
   </div>
 </header>
 
 <div class="ticker-wrap">
-  <div class="ticker-content" id="tickerText">⚡ Live headlines updating every 5 minutes &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; Select a source above to load news</div>
+  <div class="ticker-content" id="tickerText">⚡ Enter your GNews API key below to start loading live headlines</div>
 </div>
 
 <main id="newsContainer"></main>
-
-<footer>
-  Refreshes every 5 minutes · Data via RSS · <span id="lastRefresh">Never refreshed</span>
-</footer>
-
+<footer>Refreshes every 5 minutes · Powered by GNews API · <span id="lastRefresh">Not yet loaded</span></footer>
 <div id="toast"></div>
 
 <script>
-  const newsContainer = document.getElementById("newsContainer");
-  const searchInput = document.getElementById("searchInput");
-  const articleCount = document.getElementById("articleCount");
-  const tickerText = document.getElementById("tickerText");
-  const lastRefresh = document.getElementById("lastRefresh");
-  const themeBtn = document.getElementById("themeBtn");
-  const refreshBtn = document.getElementById("refreshBtn");
+const newsContainer = document.getElementById("newsContainer");
+const searchInput = document.getElementById("searchInput");
+const articleCount = document.getElementById("articleCount");
+const tickerText = document.getElementById("tickerText");
+const lastRefresh = document.getElementById("lastRefresh");
 
-  let allArticles = [];
-  let currentSource = "hindu";
-  let isDark = true;
+let allArticles = [];
+let currentTopic = "india";
+let isDark = true;
+let API_KEY = localStorage.getItem("d072f994397345e5d0ced9565e6614e1") || "d072f994397345e5d0ced9565e6614e1";
 
-  const rssFeeds = {
-    hindu: "https://www.thehindu.com/feeder/default.rss",
-    toi: "https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
-    indianexpress: "https://indianexpress.com/feed/",
-    bbc: "https://feeds.bbci.co.uk/news/rss.xml",
-    ndtv: "https://feeds.feedburner.com/ndtvnews-top-stories"
-  };
+// ── THEME ──────────────────────────────────────────────
+document.getElementById("themeBtn").addEventListener("click", () => {
+  isDark = !isDark;
+  document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+  document.getElementById("themeBtn").textContent = isDark ? "☾" : "☀";
+  showToast(isDark ? "Dark mode" : "Light mode");
+});
 
-  const sourceLabels = {
-    hindu: "The Hindu",
-    toi: "Times of India",
-    indianexpress: "Indian Express",
-    bbc: "BBC News",
-    ndtv: "NDTV"
-  };
+// ── REFRESH ────────────────────────────────────────────
+document.getElementById("refreshBtn").addEventListener("click", () => {
+  fetchNews(currentTopic);
+  showToast("Refreshing…");
+});
 
-  // FALLBACK SVG IMAGE
-  function fallbackImg() {
-    return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='220' viewBox='0 0 400 220'%3E%3Crect width='400' height='220' fill='%231c2235'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%238892a4' font-family='sans-serif' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E`;
-  }
+function setTopic(topic, btn) {
+  currentTopic = topic;
+  document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  fetchNews(topic);
+}
 
-  // THEME TOGGLE
-  themeBtn.addEventListener("click", () => {
-    isDark = !isDark;
-    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
-    themeBtn.textContent = isDark ? "☾" : "☀";
-    showToast(isDark ? "Dark mode on" : "Light mode on");
-  });
-
-  // REFRESH BUTTON
-  refreshBtn.addEventListener("click", () => {
-    refreshBtn.style.transform = "rotate(360deg)";
-    refreshBtn.style.transition = "transform 0.5s";
-    setTimeout(() => { refreshBtn.style.transform = ""; refreshBtn.style.transition = ""; }, 500);
-    fetchNews(currentSource);
-    showToast("Refreshing…");
-  });
-
-  function setSource(source, btn) {
-    currentSource = source;
-    document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    fetchNews(source);
-  }
-
-  function showSkeletons() {
-    newsContainer.innerHTML = Array(6).fill(0).map(() => `
-      <div class="skeleton-card">
-        <div class="skel-img"></div>
-        <div class="skel-body">
-          <div class="skel-line"></div>
-          <div class="skel-line"></div>
-          <div class="skel-line short"></div>
-        </div>
+// ── SKELETONS ──────────────────────────────────────────
+function showSkeletons() {
+  newsContainer.innerHTML = Array(6).fill(0).map(() => `
+    <div class="skeleton-card">
+      <div class="skel-img"></div>
+      <div class="skel-body">
+        <div class="skel-line"></div>
+        <div class="skel-line"></div>
+        <div class="skel-line short"></div>
       </div>
-    `).join("");
-  }
+    </div>`).join("");
+}
 
-  function showToast(msg) {
-    const t = document.getElementById("toast");
-    t.textContent = msg;
-    t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 2600);
-  }
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2600);
+}
 
-  async function fetchNews(source = "hindu") {
-    showSkeletons();
-    try {
-      const rssUrl = rssFeeds[source];
-      const response = await fetch(
-        `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&count=20`
-      );
-      const data = await response.json();
-      if (data.status !== "ok") throw new Error("Feed error");
-      allArticles = data.items || [];
-      displayNews(allArticles, source);
-      updateTicker(allArticles);
-      lastRefresh.textContent = "Last updated: " + new Date().toLocaleTimeString();
-      showToast(`Loaded ${allArticles.length} articles from ${sourceLabels[source]}`);
-    } catch (error) {
-      console.error(error);
-      newsContainer.innerHTML = `
-        <div class="empty-state">
-          <div class="icon">📡</div>
-          <h3>Could not load news</h3>
-          <p>Check your connection or try another source.</p>
-        </div>`;
-    }
-  }
+// ── FALLBACK IMAGE ─────────────────────────────────────
+function fallbackImg() {
+  return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='220'%3E%3Crect width='400' height='220' fill='%231c2235'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%238892a4' font-size='14' font-family='sans-serif'%3ENo Image%3C/text%3E%3C/svg%3E`;
+}
 
-  function displayNews(articles, source) {
-    newsContainer.innerHTML = "";
-    if (!articles.length) {
-      newsContainer.innerHTML = `
-        <div class="empty-state">
-          <div class="icon">🔍</div>
-          <h3>No results found</h3>
-          <p>Try a different search term.</p>
-        </div>`;
-      articleCount.textContent = "0 articles";
-      return;
-    }
-    articleCount.textContent = `${articles.length} article${articles.length !== 1 ? "s" : ""}`;
-    articles.forEach((article, i) => {
-      const card = document.createElement("div");
-      card.className = "news-card";
-      card.style.animationDelay = (i * 0.04) + "s";
-      const desc = (article.description || "")
-        .replace(/<[^>]+>/g, "")
-        .trim()
-        .slice(0, 120) || "Read the full article for details.";
-      const date = article.pubDate ? new Date(article.pubDate).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" }) : "";
-      const img = article.thumbnail && article.thumbnail.startsWith("http") ? article.thumbnail : fallbackImg();
-      const label = sourceLabels[source || currentSource] || "News";
-      card.innerHTML = `
-        <div class="card-img-wrap">
-          <img src="${img}" alt="" loading="lazy" onerror="this.src='${fallbackImg()}'"/>
-          <span class="source-badge">${label}</span>
+// ── FETCH NEWS ─────────────────────────────────────────
+async function fetchNews(topic) {
+  if (!API_KEY) { showApiKeyPrompt(); return; }
+  showSkeletons();
+  const lang = "en";
+  const country = topic === "india" ? "&country=in" : "";
+  const q = topic === "india" ? "India" : topic;
+  const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(q)}&lang=${lang}${country}&max=20&apikey=${API_KEY}`;
+  try {
+    const res = await fetch(url);
+    if (res.status === 403 || res.status === 401) { showApiKeyPrompt("Invalid API key. Please check and re-enter."); return; }
+    if (res.status === 429) { showError("Rate limit reached. GNews free tier allows 100 requests/day."); return; }
+    const data = await res.json();
+    if (!data.articles || data.articles.length === 0) { showError("No articles found for this topic."); return; }
+    allArticles = data.articles;
+    displayNews(allArticles);
+    updateTicker(allArticles);
+    lastRefresh.textContent = "Last updated: " + new Date().toLocaleTimeString();
+    showToast(`Loaded ${allArticles.length} articles`);
+  } catch (err) {
+    console.error(err);
+    showError("Network error. Check your connection and try again.");
+  }
+}
+
+// ── DISPLAY ────────────────────────────────────────────
+function displayNews(articles) {
+  newsContainer.innerHTML = "";
+  if (!articles.length) {
+    newsContainer.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h3>No results</h3><p>Try a different search term.</p></div>`;
+    articleCount.textContent = "0 articles";
+    return;
+  }
+  articleCount.textContent = `${articles.length} article${articles.length !== 1 ? "s" : ""}`;
+  articles.forEach((a, i) => {
+    const card = document.createElement("div");
+    card.className = "news-card";
+    card.style.animationDelay = (i * 0.04) + "s";
+    const desc = (a.description || "").replace(/<[^>]+>/g, "").trim().slice(0, 130) || "Read the full article for details.";
+    const date = a.publishedAt ? new Date(a.publishedAt).toLocaleDateString("en-IN", {day:"numeric",month:"short",year:"numeric"}) : "";
+    const img = a.image || fallbackImg();
+    const source = a.source && a.source.name ? a.source.name : "News";
+    card.innerHTML = `
+      <div class="card-img-wrap">
+        <img src="${img}" alt="" loading="lazy" onerror="this.src='${fallbackImg()}'"/>
+        <span class="source-badge">${source}</span>
+      </div>
+      <div class="news-content">
+        <h2>${a.title || "Untitled"}</h2>
+        <p>${desc}</p>
+        <div class="news-footer">
+          <span class="news-author">✍ ${source}</span>
+          <span class="news-date">${date}</span>
         </div>
-        <div class="news-content">
-          <h2>${article.title || "Untitled"}</h2>
-          <p>${desc}</p>
-          <div class="news-footer">
-            <span class="news-author">✍ ${article.author || "Reporter"}</span>
-            <span class="news-date">${date}</span>
-          </div>
-          <a class="read-btn" href="${article.link}" target="_blank" rel="noopener">Read Full Article →</a>
-        </div>`;
-      newsContainer.appendChild(card);
-    });
-  }
-
-  function updateTicker(articles) {
-    if (!articles.length) return;
-    const headlines = articles.slice(0, 8).map(a => a.title).join("   •   ");
-    tickerText.textContent = "⚡ " + headlines;
-  }
-
-  searchInput.addEventListener("input", () => {
-    const q = searchInput.value.toLowerCase().trim();
-    const filtered = q
-      ? allArticles.filter(a => (a.title || "").toLowerCase().includes(q) || (a.description || "").toLowerCase().includes(q))
-      : allArticles;
-    displayNews(filtered, currentSource);
+        <a class="read-btn" href="${a.url}" target="_blank" rel="noopener">Read Full Article →</a>
+      </div>`;
+    newsContainer.appendChild(card);
   });
+}
 
-  // AUTO REFRESH every 5 minutes
-  setInterval(() => fetchNews(currentSource), 300000);
+function updateTicker(articles) {
+  if (!articles.length) return;
+  tickerText.textContent = "⚡ " + articles.slice(0, 8).map(a => a.title).join("   •   ");
+}
 
-  // INITIAL LOAD
-  fetchNews("hindu");
+function showError(msg) {
+  newsContainer.innerHTML = `<div class="empty-state"><div class="icon">📡</div><h3>Could not load news</h3><p>${msg}</p></div>`;
+}
+
+// ── API KEY PROMPT ─────────────────────────────────────
+function showApiKeyPrompt(errorMsg = "") {
+  newsContainer.innerHTML = `
+    <div class="empty-state" style="grid-column:1/-1">
+      <div class="icon">🔑</div>
+      <h3>GNews API Key Required</h3>
+      <p>
+        This dashboard uses <strong>GNews.io</strong> — a free news API.<br><br>
+        ${errorMsg ? `<span style="color:#ef4444">${errorMsg}</span><br><br>` : ""}
+        1. Go to <a href="https://gnews.io" target="_blank" style="color:var(--accent)">gnews.io</a> and create a free account<br>
+        2. Copy your API key from the dashboard<br>
+        3. Paste it below — <strong>100 free requests/day</strong>, no credit card needed
+      </p>
+      <div class="apikey-form">
+        <input type="text" id="apikeyInput" placeholder="Paste your GNews API key here…"/>
+        <button onclick="saveApiKey()">Save & Load News</button>
+      </div>
+      <p style="margin-top:14px;font-size:12px;color:var(--muted)">
+        Your key is saved only in your browser's localStorage.
+      </p>
+    </div>`;
+}
+
+function saveApiKey() {
+  const val = document.getElementById("apikeyInput").value.trim();
+  if (!val) { showToast("Please enter an API key"); return; }
+  API_KEY = val;
+  localStorage.setItem("gnews_api_key", val);
+  showToast("API key saved!");
+  fetchNews(currentTopic);
+}
+
+// ── SEARCH ─────────────────────────────────────────────
+searchInput.addEventListener("input", () => {
+  const q = searchInput.value.toLowerCase().trim();
+  const filtered = q
+    ? allArticles.filter(a => (a.title||"").toLowerCase().includes(q) || (a.description||"").toLowerCase().includes(q))
+    : allArticles;
+  displayNews(filtered);
+});
+
+// ── AUTO REFRESH ───────────────────────────────────────
+setInterval(() => fetchNews(currentTopic), 300000);
+
+// ── INIT ───────────────────────────────────────────────
+if (API_KEY) { fetchNews(currentTopic); } else { showApiKeyPrompt(); }
 </script>
 </body>
 </html>
